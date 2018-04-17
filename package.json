@@ -1,0 +1,29 @@
+{
+  "name": "nodejs_p1",
+  "version": "1.0.0",
+  "description": "nodejs_p1",
+  "main": "app.js",
+  "scripts": {
+    "babel": "npx babel app.js --preset env",
+    "babel-watch": "npx babel app.js --watch --out-file app-compiled.js",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodmn": "nodemon ./app.js localhost 8080",
+    "nodmn-next": "nodemon ./app.js --exec babel-node --presets env"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aleksandr_Eremin/nodejs_p1.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Aleksandr Eremin",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "nodemon": "1.17.3"
+  }
+}
