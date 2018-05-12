@@ -3,44 +3,78 @@ const fs = require('fs');
 const path = require('path');
 
 export default class {
-  constructor(dirwatcher) {
-    this.dirwatcher = dirwatcher;
-  }
+	constructor(dirwatcher) {
+		this.dirwatcher = dirwatcher;
 
-  // * It should be able to listen to DirWatcher events
-  // * and start importing CSV files
-  // * (converting the data to JavaScript objects) on ‘dirwatcher:changed’ event.
-  // should return a promise with imported data from file at path
-  import(dataPath) {
+		this.convertOptions = {
+			delimiter: ',',
+			quote: '"',
+		};
+		this.encodingConfig = { encoding: 'utf8' };
+	}
 
-    const onAsyncImportAction = (a, b) => {
-      setImmediate(() => {
-        console.log('Importer: this happens Asynchronously...');
-      });
-    };
+	// * It should be able to listen to DirWatcher events
+	// * and start importing CSV files
+	// * (converting the data to JavaScript objects) on ‘dirwatcher:changed’ event.
+	// should return a promise with imported data from file at path
+	import(dataPath) {
+		let readFilePromises = [];
+		let readFilePromisesObj = {};
 
-    console.log('this.dirwatcher=', this.dirwatcher);
-    this.dirwatcher.myEmitter.on(this.dirwatcher.eventName, onAsyncImportAction);
-  }
+		const asyncForEach = (item) => {
+			readFilePromises.push(
+				new Promise((res, rej) => {
+					fs.readFile(
+						dataPath + item,
+						this.encodingConfig,
+						(err, data) => {
+							if (err) {
+								rej(err);// File Reading Error
+							}
 
-  // should be synchronous and return all imported data from file at path.
-  importSync(dataPath) {
+							try {
+								res(csvjson.toObject(data, this.convertOptions));
+							} catch (wrapErr) {
+								rej(wrapErr); // Data Processing Error: if needed
+							}
+						},
+					)
+				})
+			);
+		};
 
-    // set function to avoid emitter leak in the end
-    const onSyncImportAction = () => {
-      console.log('Importer: this happens Synchronously...');
+		const onAsyncImportAction = async () => {
+			console.log('Importer: this happens Asynchronously...');
 
-      this.dirwatcher.files.forEach(item => {
-        const data = fs.readFileSync(dataPath + item, { encoding: 'utf8' });
-        const options = {
-          delimiter: ',',
-          quote: '"'
-        };
+			readFilePromises.length = 0;
+			this.dirwatcher.mapFiles.forEach(asyncForEach);
 
-        console.log(csvjson.toObject(data, options));
-      });
-    };
+			try {
+				console.log('Async data>>>', await Promise.all(readFilePromises));
+			} catch (err) {
+				throw new Error(err);
+			}
+		};
 
-    this.dirwatcher.myEmitter.on(this.dirwatcher.eventName, onSyncImportAction);
-  }
+		this.dirwatcher.myEmitter.on(this.dirwatcher.eventName, onAsyncImportAction);
+	}
+
+	// should be synchronous and return all imported data from file at path.
+	importSync(dataPath) {
+		const onSyncImportAction = () => {
+			console.log('Importer: this happens Synchronously...');
+
+			this.dirwatcher.mapFiles.forEach(item => {
+				const data = fs.readFileSync(dataPath + item, this.encodingConfig);
+
+				console.log(csvjson.toObject(data, this.convertOptions));
+			});
+		};
+
+		this.dirwatcher.myEmitter.on(this.dirwatcher.eventName, onSyncImportAction);
+	}
+
+	unwatch(path, delay) {
+		this.dirwatcher && this.dirwatcher.unwatch(path, delay);
+	}
 }
