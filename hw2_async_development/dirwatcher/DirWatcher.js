@@ -104,7 +104,7 @@ export default class {
 				comparedMap.set(key, Object.assign(value, { type: 'added' }));
 			}
 
-			if (map1.has(key) && map1.get(key).modifyTime < map2.get(key).modifyTime) { // TODO :  changeTime ????
+			if (map1.has(key) && map1.get(key).modifyTime < map2.get(key).modifyTime) {
 				comparedMap.set(key, Object.assign(value, { type: 'modified' }));
 			}
 		}
