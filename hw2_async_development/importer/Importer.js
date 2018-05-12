@@ -13,34 +13,33 @@ export default class {
 		this.encodingConfig = { encoding: 'utf8' };
 	}
 
-	// * It should be able to listen to DirWatcher events
-	// * and start importing CSV files
-	// * (converting the data to JavaScript objects) on ‘dirwatcher:changed’ event.
-	// should return a promise with imported data from file at path
 	import(dataPath) {
 		let readFilePromises = [];
-		let readFilePromisesObj = {};
 
 		const asyncForEach = (item) => {
-			readFilePromises.push(
-				new Promise((res, rej) => {
-					fs.readFile(
-						dataPath + item,
-						this.encodingConfig,
-						(err, data) => {
-							if (err) {
-								rej(err);// File Reading Error
-							}
+			if (fs.existsSync(dataPath + item.fileName)) {
+				readFilePromises.push(
+					new Promise((res, rej) => {
+						fs.readFile(
+							dataPath + item.fileName,
+							this.encodingConfig,
+							(err, data) => {
+								if (err) {
+									rej(err);// File Reading Error
+								}
 
-							try {
-								res(csvjson.toObject(data, this.convertOptions));
-							} catch (wrapErr) {
-								rej(wrapErr); // Data Processing Error: if needed
-							}
-						},
-					)
-				})
-			);
+								try {
+									res({ data, item });
+								} catch (wrapErr) {
+									rej(wrapErr); // Data Processing Error: if needed
+								}
+							},
+						);
+					}),
+				);
+			} else {
+				this.log('ASYNC', ' - ', item);
+			}
 		};
 
 		const onAsyncImportAction = async () => {
@@ -50,9 +49,13 @@ export default class {
 			this.dirwatcher.mapFiles.forEach(asyncForEach);
 
 			try {
-				console.log('Async data>>>', await Promise.all(readFilePromises));
+				const dataArr = await Promise.all(readFilePromises);
+
+				dataArr.forEach(file => {
+					this.log('ASYNC', file.data, file.item);
+				});
 			} catch (err) {
-				throw new Error(err);
+				console.log('Cannot receive async data', err);
 			}
 		};
 
@@ -65,9 +68,13 @@ export default class {
 			console.log('Importer: this happens Synchronously...');
 
 			this.dirwatcher.mapFiles.forEach(item => {
-				const data = fs.readFileSync(dataPath + item, this.encodingConfig);
+				if (fs.existsSync(dataPath + item.fileName)) {
+					const data = fs.readFileSync(dataPath + item.fileName, this.encodingConfig);
 
-				console.log(csvjson.toObject(data, this.convertOptions));
+					this.log('SYNC', data, item);
+				} else {
+					this.log('SYNC', ' - ', item);
+				}
 			});
 		};
 
@@ -76,5 +83,9 @@ export default class {
 
 	unwatch(path, delay) {
 		this.dirwatcher && this.dirwatcher.unwatch(path, delay);
+	}
+
+	log(prefix, data, item) {
+		console.log(`[${prefix}] ${item.fileName} [${item.type}] >>>`, csvjson.toObject(data, this.convertOptions));
 	}
 }
