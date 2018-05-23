@@ -1,10 +1,12 @@
 const argv = require('minimist')(process.argv.slice(2));
+const fs = require('fs');
 const program = require('commander');
 const path = require('path');
 const chalk = require('chalk');
 const log = console.log;
 const rp = require('request-promise');
 const through2 = require('through2');
+const csvjson = require('csvjson');
 
 console.dir('==============');
 console.dir(argv);
@@ -65,6 +67,66 @@ const transform = () => {
   .pipe(process.stdout);
 }
 
+const isExistFile = (filePath) =>  {
+  return fs.existsSync(filePath);
+}
+
+const outputFile = (filePath) => {
+
+  // fs.createReadStream(filePath)
+  // .pipe(process.stdout);
+
+  // const readable = getReadableStreamSomehow();
+  // const writable = fs.createWriteStream('file.txt');
+  // All the data from readable goes into 'file.txt'
+  // readable.pipe(writable);
+  
+  fs.createReadStream(filePath).pipe(process.stdout);
+} 
+
+const convertFromFile = (filePath) => {
+  const readable = fs.createReadStream(filePath);
+  const writable = process.stdout;
+  const convertOptions = {
+    delimiter: ',',
+    quote: '"',
+  };
+  const toObject = csvjson.stream.toObject();
+  const stringify = csvjson.stream.stringify();
+  let csvData = '';
+
+  readable.on('data', (chunk) => {
+    csvData += chunk.toString();
+  });
+  readable.on('end', () => {
+    console.log('\nThere will be no more data.');
+  });
+
+  readable.pipe(toObject).pipe(stringify).pipe(writable);
+}
+
+const convertToFile = (filePath) => {
+  const fileOutputPath = filePath.replace('.csv', '.json');
+  const readable = fs.createReadStream(filePath);
+  const writable = fs.createWriteStream(fileOutputPath);
+  const convertOptions = {
+    delimiter: ',',
+    quote: '"',
+  };
+  const toObject = csvjson.stream.toObject();
+  const stringify = csvjson.stream.stringify();
+  let csvData = '';
+
+  readable.on('data', (chunk) => {
+    csvData += chunk.toString();
+  });
+  readable.on('end', () => {
+    console.log('\nThere will be no more data.');
+  });
+
+  readable.pipe(toObject).pipe(stringify).pipe(writable);
+}
+
 const values = Object.keys(argv).slice(1);
 const firstAttr = values[0];
 const secondAttr = values[1];
@@ -84,6 +146,33 @@ if (firstAttr === 'a' || firstAttr === 'action') {
     log('action >>>', argv[firstAttr]);
     log('file >>>', argv[secondAttr]);
 
+    if(argv[firstAttr] === 'outputFile') {
+      if (isExistFile(argv[secondAttr]) && argv[secondAttr].endsWith('.csv')) {
+        outputFile(argv[secondAttr]);
+      } else {
+        log(chalk.black.bgRed('wrong input '));
+        process.argv.push('-h');
+      }
+    }
+
+    if(argv[firstAttr] === 'convertFromFile') {
+      if (isExistFile(argv[secondAttr]) && argv[secondAttr].endsWith('.csv')) {
+        convertFromFile(argv[secondAttr]);
+      } else {
+        log(chalk.black.bgRed('wrong input '));
+        process.argv.push('-h');
+      }
+    }
+
+    if(argv[firstAttr] === 'convertToFile') {
+      if (isExistFile(argv[secondAttr]) && argv[secondAttr].endsWith('.csv')) {
+        convertToFile(argv[secondAttr]);
+      } else {
+        log(chalk.black.bgRed('wrong input '));
+        process.argv.push('-h');
+      }
+    }
+    
   } else {
   // DO if ONLY --action IGNORE others
     log('action >>>', argv[firstAttr]);
@@ -95,8 +184,6 @@ if (firstAttr === 'a' || firstAttr === 'action') {
     if (argv[firstAttr] === 'transform') {
       transform();
     }
-    
-
   }
 }
 
