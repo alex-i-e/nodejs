@@ -1,12 +1,10 @@
 const argv = require('minimist')(process.argv.slice(2));
 const program = require('commander');
-
 const path = require('path');
-
 const chalk = require('chalk');
 const log = console.log;
-
 const rp = require('request-promise');
+const through2 = require('through2');
 
 console.dir('==============');
 console.dir(argv);
@@ -35,6 +33,38 @@ rp('https://epa.ms/nodejs18-hw3-css')
         // Crawling failed...
     });
 
+const reverseString = (str) => {
+  return (str === '') ? '' : reverseString(str.substr(1)) + str.charAt(0);
+}
+
+const reverse = () => {
+  process.stdin.pipe(through2(
+    function (chunk, enc, cb) { 
+      this.push(reverseString(new String(chunk)));
+      cb(null, '\n');
+    }, // transform is a noop
+    function (cb) { // flush function
+      this.push('tacking on an extra buffer to the end');
+      cb();
+    }
+  ))
+  .pipe(process.stdout);
+}
+
+const transform = () => {
+  process.stdin.pipe(through2(
+    function (chunk, enc, cb) { 
+      this.push(new String(chunk).toUpperCase());
+      cb(null, '\n');
+    }, // transform is a noop
+    function (cb) { // flush function
+      this.push('tacking on an extra buffer to the end');
+      cb();
+    }
+  ))
+  .pipe(process.stdout);
+}
+
 const values = Object.keys(argv).slice(1);
 const firstAttr = values[0];
 const secondAttr = values[1];
@@ -58,6 +88,15 @@ if (firstAttr === 'a' || firstAttr === 'action') {
   // DO if ONLY --action IGNORE others
     log('action >>>', argv[firstAttr]);
     log('file >>>', argv[secondAttr]);
+
+    if (argv[firstAttr] === 'reverse') {
+      reverse();
+    }
+    if (argv[firstAttr] === 'transform') {
+      transform();
+    }
+    
+
   }
 }
 
@@ -66,6 +105,7 @@ if (process.argv.length < 3) {
   process.argv.push('-h');
 }
 
+
 program
   .version('1.0.0')
   .option('-a, --action [action]', 'choose an <action>')
@@ -73,20 +113,22 @@ program
   .parse(process.argv); // end with parse to parse through the input
 
 
-// const http = require('http');
-// const port = 3000;
 
-// const requestHandler = (request, response) => {
-//   console.log(request.url);
-//   response.end('Hello Node.js Server!');
-// };
-// const server = http.createServer(requestHandler);
+// const stream = through(write, end);
 
-// server.listen(port, (err) => {
-//   if (err) {
-//     return console.log('something bad happened', err);
+// process.stdin.pipe(process.stdout);
+
+
+
+// process.stdin.setEncoding('utf8');
+
+// process.stdin.on('readable', () => {
+//   const chunk = process.stdin.read();
+//   if (chunk !== null) {
+//     process.stdout.write(`data: ${chunk}`);
 //   }
+// });
 
-
-//   console.log(`server is listening on ${port}`);
+// process.stdin.on('end', () => {
+//   process.stdout.write('end');
 // });
