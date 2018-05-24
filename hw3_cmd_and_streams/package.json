@@ -4,8 +4,7 @@
   "description": "COMMAND LINE. DEBUGGING. ERROR HANDLING / FILE SYSTEM AND STREAMS",
   "main": "app.js",
   "scripts": {
-    "nodmn-test": "nodemon ./app.js  --defineItem value -b boop -a beep -e --empty arrItemA arrItemB",
-    "nodmn-babel": "nodemon ./app.js localhost --exec babel-node"
+    "nodmn-test": "nodemon ./stream.js  --defineItem value -b boop -a beep -e --empty arrItemA arrItemB"
   },
   "repository": {
     "type": "git",
