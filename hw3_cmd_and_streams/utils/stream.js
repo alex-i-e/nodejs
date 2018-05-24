@@ -1,16 +1,16 @@
 const argv = require('minimist')(process.argv.slice(2));
-const fs = require('fs');
 const program = require('commander');
-const path = require('path');
 const chalk = require('chalk');
+const fs = require('fs');
 const log = console.log;
 const rp = require('request-promise');
 const through2 = require('through2');
 const csvjson = require('csvjson');
+const {join, extname, basename} = require('path');
 
-for (let key in argv) {
-  log(chalk.white(key, ' >>> ', argv[key]));
-}
+const toFullPath = (...paths) => join(__dirname, ...paths);
+
+log('toFullPath >>> ',toFullPath());
 
 /* 'http://www.google.com' */
 rp('https://epa.ms/nodejs18-hw3-css')
@@ -31,7 +31,8 @@ rp('https://epa.ms/nodejs18-hw3-css')
 
 const BUNDLE_FILE = 'bundle.css';
 const EXTERNAL_FILE = 'external.css';
-const reverseString = (str) => {
+
+function reverseString (str) {
   return (str === '') ? '' : reverseString(str.substr(1)) + str.charAt(0);
 }
 
@@ -63,16 +64,17 @@ const transform = () => {
     .pipe(process.stdout);
 }
 
-const isExistPath = (filePath) => {
-  return fs.existsSync(filePath);
+function isExistPath(filePath) {
+  return fs.existsSync(toFullPath(filePath));
 }
 
 const outputFile = (filePath) => {
-  fs.createReadStream(filePath).pipe(process.stdout);
+  log(toFullPath(filePath));
+  fs.createReadStream(toFullPath(filePath)).pipe(process.stdout);
 }
 
 const convertFromFile = (filePath) => {
-  const readable = fs.createReadStream(filePath);
+  const readable = fs.createReadStream(toFullPath(filePath));
   const writable = process.stdout;
   const convertOptions = {
     delimiter: ',',
@@ -86,7 +88,7 @@ const convertFromFile = (filePath) => {
     csvData += chunk.toString();
   });
   readable.on('end', () => {
-    console.log('\nThere will be no more data.');
+    log('\nThere will be no more data.');
   });
 
   readable.pipe(toObject).pipe(stringify).pipe(writable);
@@ -94,8 +96,8 @@ const convertFromFile = (filePath) => {
 
 const convertToFile = (filePath) => {
   const fileOutputPath = filePath.replace('.csv', '.json');
-  const readable = fs.createReadStream(filePath);
-  const writable = fs.createWriteStream(fileOutputPath);
+  const readable = fs.createReadStream(toFullPath(filePath));
+  const writable = fs.createWriteStream(toFullPath(fileOutputPath));
   const toObject = csvjson.stream.toObject();
   const stringify = csvjson.stream.stringify();
 
@@ -103,48 +105,54 @@ const convertToFile = (filePath) => {
 }
 
 const cssBundler = (path) => {
-
+  path = toFullPath(path);
   const readDirCallback = (err, files) => {
-    if (err) console.log('Error with [readDirCallback]', err);
-    console.log('files >>> ', files);
+    if (err) log('Error with [readDirCallback]', err);
+    log('files >>> ', files);
     
     files = files.map(file => `${path}/${file}`);
-    files.push(`${EXTERNAL_FILE}`);
+    files.push(toFullPath(EXTERNAL_FILE));
 
-    console.log('files >>> ', files);
+    log('\nfiles >>> ', files);
     
     processFilesIntoOne(files);
   };
 
-  const processFilesIntoOne = async (files, endFile) => {
-    console.log(`${path}/${BUNDLE_FILE}`);
+  const processFilesIntoOne = async (files) => {
+    log(`\n${path}/${BUNDLE_FILE}`);
 
     const writer = fs.createWriteStream(`${path}/${BUNDLE_FILE}`);
     
     for(let i = 0; i< files.length; i++ ) {
       const file = files[i];
-      console.log(`>>> ${file}`);
+      log(`>>> ${file}`);
 
       const readable = fs.createReadStream(file);
       readable.pipe(writer, { end: false });
 
-      console.log(await new Promise(res => {
+      log(chalk.green.bgBlack (await new Promise(res => {
         readable.on('end', () => {
-          res(`done ... ${file}`);
+          res(`\ndone ... ${file}`);
         });
-      }));
+      })));
     }
   }
 
-  if (isExistPath(path)) {
+  if (fs.existsSync(path)) {
     try {
       fs.readdir(path, {
         encoding: 'utf8'
       }, readDirCallback);
     } catch (err) {
-      console.log('Cannot apply fs.readdir', err);
+      log('Cannot apply fs.readdir', err);
     }
   }
+}
+
+////////////////////////////////////////////////////////// 
+
+for (let key in argv) {
+  log(chalk.white(key, ' >>> ', argv[key]));
 }
 
 const values = Object.keys(argv).slice(1);
@@ -184,7 +192,7 @@ if (firstAttr === 'a' || firstAttr === 'action') {
     }
   } else if (secondAttr === 'p' || secondAttr === 'path')  {
     log('action >>>', argv[firstAttr]);
-    log('file >>>', argv[secondAttr]);
+    log('path >>>', argv[secondAttr]);
 
     if (argv[firstAttr] === 'cssBundler') {
       if (isExistPath(argv[secondAttr])) {
@@ -196,13 +204,13 @@ if (firstAttr === 'a' || firstAttr === 'action') {
     }
   } else {
     log('action >>>', argv[firstAttr]);
-    log('file >>>', argv[secondAttr]);
+    log('attrs >>>', argv[secondAttr]);
 
     if (argv[firstAttr] === 'reverse') {
-      reverse();
+        reverse();
     }
     if (argv[firstAttr] === 'transform') {
-      transform();
+        transform();
     }
 
     if (~['outputFile', 'convertFromFile', 'convertToFile', 'cssBundler'].indexOf(argv[firstAttr])) {
