@@ -149,6 +149,31 @@ const cssBundler = (path) => {
   }
 }
 
+const lookupTable = {
+  outputFile: (fileName) => {
+    outputFile(fileName);
+  },
+  convertFromFile: (fileName) => {
+    convertFromFile(fileName);
+  },
+  convertToFile: (fileName) => {
+    convertToFile(fileName);
+  },
+  cssBundler: (path) => {
+    cssBundler(path);
+  },
+  reverse: () => {
+    reverse();
+  },
+  transform: () => {
+    transform();
+  },
+  wrongInput: () => {
+    log(chalk.black.bgRed('wrong input '));
+    process.argv.push('-h');
+  }
+};
+
 ////////////////////////////////////////////////////////// 
 
 for (let key in argv) {
@@ -160,69 +185,37 @@ const firstAttr = values[0];
 const secondAttr = values[1];
 
 if (firstAttr === 'a' || firstAttr === 'action') {
-  if (secondAttr === 'f' || secondAttr === 'file') {
-    log('action >>>', argv[firstAttr]);
-    log('file >>>', argv[secondAttr]);
-
-    if (argv[firstAttr] === 'outputFile') {
+  switch (secondAttr) {
+    case 'f':
+    case 'file':
       if (isExistPath(argv[secondAttr]) && argv[secondAttr].endsWith('.csv')) {
-        outputFile(argv[secondAttr]);
+        lookupTable[argv[firstAttr]](argv[secondAttr]);
       } else {
-        log(chalk.black.bgRed('wrong input '));
-        process.argv.push('-h');
+        lookupTable.wrongInput();
       }
-    }
-
-    if (argv[firstAttr] === 'convertFromFile') {
-      if (isExistPath(argv[secondAttr]) && argv[secondAttr].endsWith('.csv')) {
-        convertFromFile(argv[secondAttr]);
+      break;
+    case 'p':
+    case 'path':
+      if (argv[firstAttr] === 'cssBundler' && isExistPath(argv[secondAttr])) {
+        lookupTable[argv[firstAttr]](argv[secondAttr]);
       } else {
-        log(chalk.black.bgRed('wrong input '));
-        process.argv.push('-h');
+        lookupTable.wrongInput();
       }
-    }
-
-    if (argv[firstAttr] === 'convertToFile') {
-      if (isExistPath(argv[secondAttr]) && argv[secondAttr].endsWith('.csv')) {
-        convertToFile(argv[secondAttr]);
-      } else {
-        log(chalk.black.bgRed('wrong input '));
-        process.argv.push('-h');
+      break;
+    case 'f':
+    case 'file':
+      break;
+    default:
+      if (~['outputFile', 'convertFromFile', 'convertToFile', 'cssBundler'].indexOf(argv[firstAttr])) {
+        lookupTable.wrongInput();
       }
-    }
-  } else if (secondAttr === 'p' || secondAttr === 'path')  {
-    log('action >>>', argv[firstAttr]);
-    log('path >>>', argv[secondAttr]);
 
-    if (argv[firstAttr] === 'cssBundler') {
-      if (isExistPath(argv[secondAttr])) {
-        cssBundler(argv[secondAttr]);
-      } else {
-        log(chalk.black.bgRed('wrong input '));
-        process.argv.push('-h');
-      }
-    }
-  } else {
-    log('action >>>', argv[firstAttr]);
-    log('attrs >>>', argv[secondAttr]);
-
-    if (argv[firstAttr] === 'reverse') {
-        reverse();
-    }
-    if (argv[firstAttr] === 'transform') {
-        transform();
-    }
-
-    if (~['outputFile', 'convertFromFile', 'convertToFile', 'cssBundler'].indexOf(argv[firstAttr])) {
-      log(chalk.black.bgRed('wrong input '));
-      process.argv.push('-h');
-    }
+      lookupTable[argv[firstAttr]]();
   }
 }
 
 if (process.argv.length < 3) {
-  log(chalk.black.bgRed('wrong input '));
-  process.argv.push('-h');
+  lookupTable.wrongInput();
 }
 
 program
