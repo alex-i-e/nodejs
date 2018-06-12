@@ -22,7 +22,8 @@
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "csvjson": "5.0.0",
-    "nodemon": "1.17.3"
+    "nodemon": "1.17.3",
+    "through2": "2.0.3"
   },
   "devDependencies": {}
 }

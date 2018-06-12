@@ -1,75 +1,70 @@
 const urlParser = require('url');
 const querystring = require('querystring');
 
+const chalk = require('chalk');
 const fs = require('fs');
+const log = console.log;
 
-const { request, get } = require('http');
+const through2 = require('through2');
+const { request } = require('http');
+
+const { join } = require('path');
+
+const toFullPath = (...paths) => join(__dirname, ...paths);
+log('toFullPath >>> ', toFullPath());
+
+const INDEX_FILE_NAME = 'index.html';
+const TEMPLATE_MAPPER = { message: 'WOW!' };
+
+function isExistPath(filePath) {
+	return fs.existsSync(toFullPath(filePath));
+}
+
+function templateParser(template, mapper) {
+	for (let prop in mapper) {
+		if (mapper.hasOwnProperty(prop)) {
+			template = template.replace(`{${prop}}`, mapper[prop]);
+		}
+	}
+
+	return template;
+}
 
 export default require('http')
 	.createServer()
 	.on('request', (req, res) => {
 		const query = urlParser.parse(req.url).query;
-		console.log('query >>>', query);
+		log('query >>>', query);
 
 		const params = querystring.parse(query);
-		console.log('params >>>', params);
+		log('params >>>', params);
 
 		const { url, method } = req;
-		console.log('<url> [method] >>>', `<${url}> [${method}]`);
+		log('<url> [method] >>>', `<${url}> [${method}]`);
 
-
-		// #2 Echo-Server
-		// req.pipe(res);
-
-		if (req.url === '/node/item?query=123&count=1000') {
-			// #1 Html-Server
+		// Html-Server
+		if (isExistPath(INDEX_FILE_NAME)) {
 			res.writeHead(200, {
 				'Content-Type': 'text/html',
 			});
 
-			res.end(`<h1>Hello World on NodeJS</h1>`);
-			// or
-			// res.write('');
-			// res.end();
-
-		} else if (req.url === '/error') {
-			// // #4 Plain-Text-Server
-			// res.writeHead(404, {
-			// 	'Content-Type': 'text/plain',
-			// });
-			// res.end('Page not found, sorry!');
-
-			// #5 Write some data into file using POST
-			const options = {
-				hostname: 'localhost',
-				port: 3000,
-				path: '/hello-world',
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			};
-
-			const req = request(
-				options,
-				(res) => {
-					res.pipe(fs.createWriteStream('response_data.txt'));
-				});
-
-			req.on('error', (err) => {
-				console.log(err);
-			});
-
-			req.write(JSON.stringify({ some: 'data' }));
-			req.end();
-
-		} else if (req.url === '/hello-world') {
-
-
+			fs.createReadStream(toFullPath(INDEX_FILE_NAME))
+				.pipe(through2(
+					function (chunk, enc, cb) {
+						this.push(templateParser(new String(chunk), TEMPLATE_MAPPER));
+						cb(null, '\n');
+					}, // transform is a noop
+					function (cb) { // flush function
+						// this.push('tacking on an extra buffer to the end');
+						cb();
+					},
+				))
+				.pipe(res);
 		} else {
-			// #3 Static-Page-Server
-			fs.createReadStream('index.html').pipe(res);
+			res.writeHead(200, {
+				'Content-Type': 'text/plain',
+			});
+			res.end('error: file not exist!');
 		}
-
 	})
-	.listen(3000);
+	.listen(3100);

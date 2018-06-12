@@ -2,19 +2,7 @@ const urlParser = require('url');
 const querystring = require('querystring');
 
 const fs = require('fs');
-
 const { request } = require('http');
-
-const product = {
-	id: 1,
-	name: 'Supreme T-Shirt',
-	brand: 'Supreme',
-	price: 99.99,
-	options: [
-		{ color: 'blue' },
-		{ size: 'XL' },
-	],
-};
 
 export default require('http')
 	.createServer()
@@ -29,9 +17,12 @@ export default require('http')
 		console.log('<url> [method] >>>', `<${url}> [${method}]`);
 
 		res.writeHead(200, {
-			'Content-Type': 'application/json',
+			'Content-Type': 'text/plain',
 		});
 
-		res.end(JSON.stringify(product));
+		res.write('PONG...');
+
+		// Echo-Server
+		req.pipe(res);
 	})
-	.listen(3200);
+	.listen(3300);
