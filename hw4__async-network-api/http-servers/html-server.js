@@ -67,4 +67,4 @@ export default require('http')
 			res.end('error: file not exist!');
 		}
 	})
-	.listen(3100);
+	// .listen(3100);

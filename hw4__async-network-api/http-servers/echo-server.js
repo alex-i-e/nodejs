@@ -16,13 +16,22 @@ export default require('http')
 		const { url, method } = req;
 		console.log('<url> [method] >>>', `<${url}> [${method}]`);
 
-		res.writeHead(200, {
-			'Content-Type': 'text/plain',
+		// res.writeHead(200, {
+		// 	'Content-Type': 'text/plain',
+		// });
+		//
+		// res.write('PONG...');
+		//
+		// // Echo-Server
+		// req.pipe(res);
+
+		let body = [];
+		req.on('data', (chunk) => {
+			body.push(chunk);
+		}).on('end', () => {
+			body = Buffer.concat(body).toString();
+			res.end(body);
 		});
 
-		res.write('PONG...');
-
-		// Echo-Server
-		req.pipe(res);
-	})
-	.listen(3300);
+	});
+// .listen(3300);

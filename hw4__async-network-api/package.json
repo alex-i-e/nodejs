@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "babel-start": "babel-node app.js localhost",
-    "nodmn-next": "nodemon ./app.js localhost --exec babel-node"
+    "nodmn-next": "nodemon ./index.js localhost --exec babel-node"
   },
   "repository": {
     "type": "git",
@@ -21,7 +20,9 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
+    "cookie-parser": "1.4.3",
     "csvjson": "5.0.0",
+    "express": "4.16.3",
     "nodemon": "1.17.3",
     "through2": "2.0.3"
   },
