@@ -1,0 +1,38 @@
+{
+  "name": "hw3_cmd_and_streams",
+  "version": "1.0.0",
+  "description": "COMMAND LINE. DEBUGGING. ERROR HANDLING / FILE SYSTEM AND STREAMS",
+  "main": "app.js",
+  "scripts": {
+    "nodmn-test": "nodemon app.js  --defineItem value -b boop -a beep -e --empty arrItemA arrItemB",
+    "nodmn-p1": "node utils/stream.js -a reverse",
+    "nodmn-p2": "node utils/stream.js -a transform",
+    "nodmn-p3": "node utils/stream.js -a outputFile  -f input.csv",
+    "nodmn-p4": "node utils/stream.js -a convertFromFile  -f input.csv",
+    "nodmn-p5": "node utils/stream.js -a convertToFile  -f input.csv",
+    "nodmn-p6": "node utils/stream.js -a cssBundler -p style"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aleksandr_Eremin/nodejs_p1.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Aleksandr Eremin",
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "chalk": "2.4.1",
+    "commander": "2.15.1",
+    "csvjson": "^5.0.0",
+    "minimist": "1.2.0",
+    "nodemon": "1.17.3",
+    "request": "2.87.0",
+    "request-promise": "4.2.2",
+    "through2": "2.0.3"
+  },
+  "devDependencies": {}
+}
