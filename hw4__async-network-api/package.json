@@ -5,7 +5,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "nodmn-next": "nodemon ./index.js localhost --exec babel-node"
+    "nodmn-next": "nodemon ./index.js localhost --exec babel-node",
+    "echo-server": "nodemon ./http-servers/echo-server.js localhost --exec babel-node",
+    "html-server": "nodemon ./http-servers/html-server.js localhost --exec babel-node",
+    "json-server": "nodemon ./http-servers/json-server.js localhost  --exec babel-node",
+    "plain-text-server": "nodemon ./http-servers/plain-text-server.js localhost  --exec babel-node"
   },
   "repository": {
     "type": "git",

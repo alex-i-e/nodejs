@@ -4,12 +4,13 @@ const app = express(appServer);
 const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 8080;
 
-import api from './middlewares/api';
+import api from './routes/api';
+import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
 
-
-app.use(cookieParser());// need cookieParser middleware before we can do anything with cookies
+// need cookieParser middleware before we can do anything with cookies
+app.use(cookieParser());
 
 app.use(customCookieParser);
 
@@ -17,7 +18,6 @@ app.use(customQueryParser);
 
 app.use('/api', api);
 
-// let static middleware do its job
-// app.use(express.static(__dirname + '/public'));
+app.use(customErrorHandler);
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));
