@@ -1,0 +1,32 @@
+{
+    "users": [
+        {
+            "id": "1",
+            "username": "Arsen",
+            "email": "arsen@global.com",
+            "password": "12345678"
+        },
+        {
+            "id": "2",
+            "username": "Fedor",
+            "email": "fedor@global.com",
+            "password": "12345678"
+        },
+        {
+            "id": "3",
+            "username": "Yakov",
+            "email": "yakov@global.com",
+            "password": "12345678"
+        },{
+            "id": "4",
+            "username": "Petr",
+            "email": "petr@global.com",
+            "password": "12345678"
+        },{
+            "id": "5",
+            "username": "Mitya",
+            "email": "mitya@global.com",
+            "password": "12345678"
+        }
+    ]
+}

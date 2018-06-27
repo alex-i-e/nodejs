@@ -24,9 +24,11 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
+    "body-parser": "1.18.3",
     "cookie-parser": "1.4.3",
     "csvjson": "5.0.0",
     "express": "4.16.3",
+    "jsonwebtoken": "8.3.0",
     "nodemon": "1.17.3",
     "through2": "2.0.3"
   },
