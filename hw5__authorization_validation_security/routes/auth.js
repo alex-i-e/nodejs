@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 
 import {users} from '../config/users.json';
-import {secret} from '../config/config.json';
+import {expiration, secret} from '../config/config.json';
 
 router.post('/auth', function postAuthorization(req, res) {
     let result = {};
@@ -14,9 +14,11 @@ router.post('/auth', function postAuthorization(req, res) {
     if (currentUser) {
         if (currentUser.password === req.body.password) {
             const token = jwt.sign(
-                currentUser.id,
-                this.secret,
-                {expiresIn: this.exiration}
+                {
+                    id: currentUser.id
+                },
+                secret,
+                {expiresIn: expiration}
             );
 
             result = {

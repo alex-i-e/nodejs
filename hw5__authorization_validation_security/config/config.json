@@ -1,3 +1,4 @@
 {
-    "secret": "secret"
+  "secret": "secret",
+  "expiration": "1h"
 }
