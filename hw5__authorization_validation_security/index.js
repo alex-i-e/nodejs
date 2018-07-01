@@ -13,6 +13,8 @@ const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
+const Account = require('./models/account');
+
 // need cookieParser middleware before we can do anything with cookies
 app.use(cookieParser());
 
@@ -25,6 +27,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
 app.use(bodyParser.json());
+
+passport.serializeUser(Account.serializeUser);
+passport.deserializeUser(Account.deserializeUser);
 
 app.use(passport.initialize());
 app.use(passport.session());

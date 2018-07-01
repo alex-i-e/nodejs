@@ -13,6 +13,17 @@ function findUser(username, callback) {
     }
 }
 
+function findUserById(id, callback) {
+    const currentUser = users
+        .find(user => user.id === id);
+
+    if (currentUser) {
+        callback(null, currentUser);
+    } else {
+        callback(new Error('User not found!'));
+    }
+}
+
 module.exports = {
     authenticate: (username, password, done) => {
         findUser(username, (err, user) => {
@@ -35,10 +46,15 @@ module.exports = {
             })
         })
     },
-    serializeUser: () => {
-
+    serializeUser: (user, cb) => {
+        cb(null, user.id);
     },
-    deserializeUser: () => {
-
+    deserializeUser: (id, cb) => {
+        findUserById(id, function (err, user) {
+            if (err) {
+                return cb(err);
+            }
+            cb(null, user);
+        });
     }
 };
