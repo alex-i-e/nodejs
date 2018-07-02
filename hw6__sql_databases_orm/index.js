@@ -4,12 +4,42 @@ import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
 
+const logger = require('morgan');
 const express = require('express');
 const appServer = require('http').createServer();
 const app = express(appServer);
 const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
+
+const {Client} = require('pg');
+const client = new Client("postgres://postgres:pg1234567890@localhost:5432/nodejs");
+// const Pg = require('pg').Client;
+// const conString = "postgres://postgres:pg1234567890@domain.com/nodejs";
+
+
+(async () => {
+
+    // const pg = new Pg(conString);
+    // pg.connect();
+    //
+    // const query = pg.query("select * from nodejs.users order by id", function (err, result) {
+    //     console.log(' >>>. ');
+    //
+    //     const json = JSON.stringify(result.rows);
+    //     console.log(json);
+    // });
+
+
+    await client.connect();
+
+    const res = await client.query('SELECT $1::text as message', ['Hello world!']);
+
+    console.log(res.rows[0].message); // Hello world!
+    await client.end();
+})();
+
+app.use(logger('dev'));
 
 // need cookieParser middleware before we can do anything with cookies
 app.use(cookieParser());
