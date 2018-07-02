@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
-
 import {users} from '../config/users.json';
 
-function findUser(username, callback) {
+function findUserByName(username, callback) {
     const currentUser = users
         .find(user => user.username === username);
 
@@ -13,20 +12,35 @@ function findUser(username, callback) {
     }
 }
 
-function findUserById(id, callback) {
+function findUserById(type, id, callback) {
     const currentUser = users
         .find(user => user.id === id);
 
     if (currentUser) {
         callback(null, currentUser);
     } else {
-        callback(new Error('User not found!'));
+        callback(new Error(`${type.toUpperCase()} User not found!`));
     }
 }
 
 module.exports = {
+    google_authenticate: (token, tokenSecret, profile, cb) => {
+        findUserById('google', profile.id, (err, user) => (
+            cb(err, user)
+        ));
+    },
+    twitter_authenticate: (token, tokenSecret, profile, cb) => {
+        findUserById('twitter', profile.id, (err, user) => (
+            cb(err, user)
+        ));
+    },
+    facebook_authenticate: (accessToken, refreshToken, profile, cb) => {
+        findUserById('facebook', profile.id, (err, user) => (
+            cb(err, user)
+        ));
+    },
     authenticate: (username, password, done) => {
-        findUser(username, (err, user) => {
+        findUserByName(username, (err, user) => {
             if (err) {
                 return done(err)
             }
@@ -50,7 +64,7 @@ module.exports = {
         cb(null, user.id);
     },
     deserializeUser: (id, cb) => {
-        findUserById(id, function (err, user) {
+        findUserById('', id, (err, user) => {
             if (err) {
                 return cb(err);
             }

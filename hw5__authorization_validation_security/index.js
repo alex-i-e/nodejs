@@ -1,7 +1,7 @@
 import appServer from './app';
 import api from './routes/api';
 import auth from './routes/auth';
-import localStrategy from './routes/localStrategy';
+import strategyRoute from './routes/strategyRoute';
 import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
 app.use(bodyParser.json());
+app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
 
 passport.serializeUser(Account.serializeUser);
 passport.deserializeUser(Account.deserializeUser);
@@ -36,7 +37,7 @@ app.use(passport.session());
 
 app.use('/api', api);
 app.use('/', auth);
-app.use('/', localStrategy(passport));
+app.use('/login', strategyRoute(passport));
 
 app.use(customErrorHandler);
 

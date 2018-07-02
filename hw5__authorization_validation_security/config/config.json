@@ -1,4 +1,12 @@
 {
   "secret": "secret",
-  "expiration": "1h"
+  "expiration": "1h",
+  "auth": {
+    "GOOGLE_CLIENT_ID": "1070600248722-0812jse0qsu1nib65uhktif8rvsncob9.apps.googleusercontent.com",
+    "GOOGLE_CLIENT_SECRET": "aIyPmaG8UI2G0zcP5_Z7_4tq",
+    "TWITTER_CONSUMER_KEY": "4u3lOhAwJGgUl2XE72nD37yVF",
+    "TWITTER_CONSUMER_SECRET": "D2cf3E1JMn0Wha6XlZzkAPcD9LxHtNYM0VOIMmIAQiotuOIqOr",
+    "FACEBOOK_APP_ID": "219032688732001",
+    "FACEBOOK_APP_SECRET": "e0755cb8182bb1f562b242600287a17c"
+  }
 }
