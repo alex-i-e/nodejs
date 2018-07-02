@@ -3,6 +3,7 @@ import api from './routes/api';
 import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
+import {db} from "./config/config.json";
 
 const logger = require('morgan');
 const express = require('express');
@@ -12,8 +13,10 @@ const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
 
+
 const {Client} = require('pg');
-const client = new Client("postgres://postgres:pg1234567890@localhost:5432/nodejs");
+const client = new Client(`postgres://${db.pg.login}:${db.pg.password}@${db.pg.host}/${db.pg.dbName}`);
+
 // const Pg = require('pg').Client;
 // const conString = "postgres://postgres:pg1234567890@domain.com/nodejs";
 
