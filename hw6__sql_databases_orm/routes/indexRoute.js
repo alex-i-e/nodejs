@@ -20,4 +20,5 @@ router.get('/', function getIndexPage(req, res) {
     }
 });
 
-export default router;
+
+module.exports = router;
