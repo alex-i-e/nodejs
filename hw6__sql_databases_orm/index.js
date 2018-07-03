@@ -33,6 +33,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
 
+dbClient.connect();
+
 app.use('/', require('./routes/indexRoute'));
 app.use('/api', require('./routes/api')(dbClient));
 
