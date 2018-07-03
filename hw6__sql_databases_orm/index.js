@@ -42,6 +42,7 @@ const client = new Client(`postgres://${db.pg.login}:${db.pg.password}@${db.pg.h
     await client.end();
 })();
 
+
 app.use(logger('dev'));
 
 // need cookieParser middleware before we can do anything with cookies
