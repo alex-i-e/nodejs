@@ -12,10 +12,15 @@ const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
 
+const {Client, Pool} = require('pg');
 
-const {Client} = require('pg');
-// const dbClient = new Client(`postgres://${db.pg.login}:${db.pg.password}@${db.pg.host}/${db.pg.dbName}`);
-const dbClient = new Client(`postgres://${db.username}:${db.password}@${db.host}/${db.database}`);
+// const dbClient = new Client(`postgres://${db.username}:${db.password}@${db.host}/${db.database}`);
+// dbClient.connect();
+
+const dbClient = new Pool(
+    {
+        connectionString: `postgres://${db.username}:${db.password}@${db.host}/${db.database}`,
+    });
 
 app.use(logger('dev'));
 
@@ -32,8 +37,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 // parse application/json
 app.use(bodyParser.json());
 app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
-
-dbClient.connect();
 
 app.use('/', require('./routes/indexRoute'));
 app.use('/api', require('./routes/api')(dbClient));
