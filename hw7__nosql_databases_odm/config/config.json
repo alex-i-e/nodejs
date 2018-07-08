@@ -1,0 +1,13 @@
+{
+  "secret": "secret",
+  "expiration": "1h",
+  "db": {
+    "mongo": {
+      "host": "localhost",
+      "port": "27017",
+      "dbName": "mongodb",
+      "login": "",
+      "password": ""
+    }
+  }
+}
