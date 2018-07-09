@@ -11,7 +11,27 @@ const initDatabases = require('./db/initDatabase');
 const url = `mongodb://${db.mongo.host}:${db.mongo.port}/${db.mongo.dbName}`;
 const dbClient = {};
 
-initDatabases(url, db.mongo.options)
+let dbs;
+(async () => {
+    try {
+        dbs = await initDatabases(url, db.mongo.options);
+    } catch (err) {
+        console.log(err);
+    }
+
+    console.log("......dbs......", dbs);
+    console.log("......initDatabases......");
+
+    const cursor = dbs.collection('cities').find();
+    cursor.forEach(
+        function (doc) {
+            console.log(doc);
+        },
+        () => {
+        });
+})();
+
+/*initDatabases(url, db.mongo.options)
     .then(db => {
         console.log("......initDatabases......");
 
@@ -26,7 +46,7 @@ initDatabases(url, db.mongo.options)
     })
     .catch(err => {
         console.log(err);
-    });
+    });*/
 
 /////////////////////////////////////////
 
