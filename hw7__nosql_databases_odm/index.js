@@ -8,89 +8,12 @@ const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
 const initDatabases = require('./db/initDatabase');
 
-// Connection URL
-// const url = 'mongodb://localhost:27017';
-const url = 'mongodb://localhost:27017/mongodb';
-// Database Name
-const dbName = 'mongodb';
-
-const option = {
-    db: {
-        numberOfRetries: 5
-    },
-    server: {
-        auto_reconnect: true,
-        poolSize: 40,
-        socketOptions: {
-            connectTimeoutMS: 500
-        }
-    },
-    useNewUrlParser: true
-};
-// const dbConfig = db;
+const url = `mongodb://${db.mongo.host}:${db.mongo.port}/${db.mongo.dbName}`;
 const dbClient = {};
 
-const assert = require('assert');
-//
-// let initDb;
-// (async () => {
-//     initDb = await initDatabases(url, dbName, option);
-//
-//
-//     initDb.then(dbs => {
-//
-//
-//         // assert.equal(null, err);
-//         console.log("......initDatabases......");
-//
-//         const db = dbs;
-//         console.log('db.collection(\'cities\') >>>', db.collection('cities'));
-//
-//         const cursor = db.collection('cities').find();
-//         cursor.forEach(
-//             function (doc) {
-//                 console.log(doc);
-//             },
-//             () => {
-//             });
-//
-//         // client.close();
-//     });
-// })();
-
-//
-// (async () => {
-//     await initDatabases(url, dbName, option)
-//         .then(dbs => {
-//
-//
-//             // assert.equal(null, err);
-//             console.log("......initDatabases......");
-//
-//             const db = dbs;
-//             console.log('db.collection(\'cities\') >>>', db.collection('cities'));
-//
-//             const cursor = db.collection('cities').find();
-//             cursor.forEach(
-//                 function (doc) {
-//                     console.log(doc);
-//                 },
-//                 () => {
-//                 });
-//
-//             // client.close();
-//         });
-// })();
-
-initDatabases(url, dbName, option)
-    .then(dbs => {
-
-
-        // assert.equal(null, err);
+initDatabases(url, db.mongo.options)
+    .then(db => {
         console.log("......initDatabases......");
-
-        const db = dbs;
-        console.log('db.collection(\'cities\') >>>', db.collection('cities'));
 
         const cursor = db.collection('cities').find();
         cursor.forEach(
@@ -100,31 +23,10 @@ initDatabases(url, dbName, option)
             () => {
             });
 
-        client.close();
+    })
+    .catch(err => {
+        console.log(err);
     });
-
-
-/*
-// Use connect method to connect to the server
-MongoClient.connect(url, option, async function (err, client) {
-    assert.equal(null, err);
-    console.log("......Connected successfully to server.......");
-
-    const db = client.db(dbName);
-    console.log('db.collection(\'cities\') >>>', db.collection('cities'));
-
-    const cursor = db.collection('cities').find();
-    cursor.forEach(
-        function (doc) {
-            console.log(doc);
-        },
-        () => {
-        });
-
-    client.close();
-});
-*/
-
 
 /////////////////////////////////////////
 

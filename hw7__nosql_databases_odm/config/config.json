@@ -7,7 +7,14 @@
       "port": "27017",
       "dbName": "mongodb",
       "login": "",
-      "password": ""
+      "password": "",
+      "options": {
+        "numberOfRetries": 5,
+        "auto_reconnect": true,
+        "poolSize": 40,
+        "connectTimeoutMS": 5000,
+        "useNewUrlParser": true
+      }
     }
   }
 }
