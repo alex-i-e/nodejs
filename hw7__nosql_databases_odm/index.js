@@ -1,52 +1,67 @@
 import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
+import mongoose from 'mongoose';
 import {db} from "./config/config.json";
+// import './db/testNative';
 
 const app = require('express')(require('http').createServer());
 const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
-const initDatabases = require('./db/initDatabase');
 
 const url = `mongodb://${db.mongo.host}:${db.mongo.port}/${db.mongo.dbName}`;
+mongoose.connect(url);
+
 const dbClient = {};
 
-let dbs;
-(async () => {
-    try {
-        dbs = await initDatabases(url, db.mongo.options);
-    } catch (err) {
-        console.log(err);
+const Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
+
+const City = new Schema({
+    name: {type: String, default: 'Minsk', match: /[a-z]/},
+    country: {type: String, default: 'Belarus', match: /[a-z]/},
+    capital: {type: Boolean, default: true},
+    location: {
+        lat: {type: Number/*, index: true*/},
+        long: {type: Number/*, index: true*/}
     }
+});
 
-    console.log("......dbs......", dbs);
-    console.log("......initDatabases......");
 
-    const cursor = dbs.collection('cities').find();
-    cursor.forEach(
-        function (doc) {
-            console.log(doc);
-        },
-        () => {
-        });
-})();
+// a setter
+City.path('name').set(cityName => capitalize(cityName));
+// a setter
+City.path('country').set(countryName => capitalize(countryName));
 
-/*initDatabases(url, db.mongo.options)
-    .then(db => {
-        console.log("......initDatabases......");
+function capitalize(str) {
+    return str[0].toUpperCase() + str.slice(1);
+}
 
-        const cursor = db.collection('cities').find();
-        cursor.forEach(
-            function (doc) {
-                console.log(doc);
-            },
-            () => {
-            });
 
-    })
-    .catch(err => {
-        console.log(err);
-    });*/
+// middleware
+City.pre('save', function (next) {
+    // notify(this.get('email'));
+    console.log(' > pre Save > [city]');
+    next();
+});
+
+const CityModel = mongoose.model('City', City);
+const cityInstance = new CityModel();
+
+console.log(' >>> cityInstance=', cityInstance);
+
+cityInstance.capital = true;
+cityInstance.save(function (err, data) {
+    if (!err) console.log('Success!');
+    console.log(' >>> data=', data);
+});
+
+
+CityModel.find({}, function (err, docs) {
+    // docs.forEach
+    console.log(' >>> docs=', docs);
+});
+
 
 /////////////////////////////////////////
 
