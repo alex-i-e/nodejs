@@ -1,6 +1,6 @@
 NODEJS - app
 ===================
-# Async development
+# Authorization. Validation. Security
 
 script run with `nodemon`:
 - npm run nodmn-next

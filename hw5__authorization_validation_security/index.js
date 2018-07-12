@@ -1,7 +1,6 @@
 import appServer from './app';
 import api from './routes/api';
 import auth from './routes/auth';
-import strategyRoute from './routes/strategyRoute';
 import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
@@ -37,7 +36,7 @@ app.use(passport.session());
 
 app.use('/api', api);
 app.use('/', auth);
-app.use('/login', strategyRoute(passport));
+app.use('/login', require('./routes/strategyRoute'));
 
 app.use(customErrorHandler);
 

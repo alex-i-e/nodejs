@@ -1,3 +1,4 @@
+const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const Account = require('../models/account');
 import {auth} from '../config/config.json';
@@ -9,13 +10,11 @@ import {auth} from '../config/config.json';
  app: nodejs-mentoring-program
 */
 
-module.exports = function GooglePassportInit(proposedPassport) {
-    return proposedPassport.use(new GoogleStrategy(
-        {
-            clientID: auth.GOOGLE_CLIENT_ID,
-            clientSecret: auth.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:8080/login/google/callback"
-        },
-        Account.google_authenticate
-    ));
-};
+passport.use(new GoogleStrategy(
+    {
+        clientID: auth.GOOGLE_CLIENT_ID,
+        clientSecret: auth.GOOGLE_CLIENT_SECRET,
+        callbackURL: "http://localhost:8080/login/google/callback"
+    },
+    Account.google_authenticate
+));

@@ -1,3 +1,4 @@
+const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const Account = require('../models/account');
 import {auth} from '../config/config.json';
@@ -7,13 +8,11 @@ import {auth} from '../config/config.json';
  app: nodejs_mentoring_program
 */
 
-module.exports = function twitterPassportInit(proposedPassport) {
-    return proposedPassport.use(new TwitterStrategy(
-        {
-            consumerKey: auth.TWITTER_CONSUMER_KEY,
-            consumerSecret: auth.TWITTER_CONSUMER_SECRET,
-            callbackURL: "http://localhost:8080/login/twitter/callback"
-        },
-        Account.twitter_authenticate
-    ));
-};
+passport.use(new TwitterStrategy(
+    {
+        consumerKey: auth.TWITTER_CONSUMER_KEY,
+        consumerSecret: auth.TWITTER_CONSUMER_SECRET,
+        callbackURL: "http://localhost:8080/login/twitter/callback"
+    },
+    Account.twitter_authenticate
+));

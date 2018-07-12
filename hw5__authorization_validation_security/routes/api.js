@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-import verifyToken from './verifyToken';
+import verifyToken from '../middlewares/verifyToken';
 
 router.use(function timeLog(req, res, next) {
 	console.log('Time: ', Date.now());

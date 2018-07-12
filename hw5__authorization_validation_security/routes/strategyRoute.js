@@ -1,49 +1,48 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 
-module.exports = function strategyRoute(passport) {
-    const localPassport = require('../controllers/localPassport')(passport);
-    const facebookPassport = require('../controllers/facebookPassport')(localPassport);
-    const twitterPassport = require('../controllers/twitterPassport')(facebookPassport);
-    const googlePassport = require('../controllers/googlePassport')(twitterPassport);
+require('../controllers/localPassport');
+require('../controllers/facebookPassport');
+require('../controllers/twitterPassport');
+require('../controllers/googlePassport');
 
-    router.post('/local',
-        googlePassport.authenticate('local', {failureRedirect: '/login'}),
-        function (req, res) {
-            res.redirect('/local-success');
-        });
+router.post('/local',
+    passport.authenticate('local', {failureRedirect: '/login'}),
+    function (req, res) {
+        res.status(200).redirect('/local-success');
+    });
 
-    router.get('/facebook',
-        googlePassport.authenticate('facebook', {
-            authType: 'rerequest',
-            scope: ['manage_pages']
-        }));
+router.get('/facebook',
+    passport.authenticate('facebook', {
+        authType: 'rerequest',
+        scope: ['manage_pages']
+    }));
 
-    router.get('/facebook/callback',
-        googlePassport.authenticate('facebook', {failureRedirect: '/login/facebook-error'}),
-        function (req, res) {
-            res.redirect('/facebook-success');
-        });
+router.get('/facebook/callback',
+    passport.authenticate('facebook', {failureRedirect: '/login/facebook-error'}),
+    function (req, res) {
+        res.status(200).redirect('/facebook-success');
+    });
 
-    router.get('/twitter',
-        googlePassport.authenticate('twitter')
-    );
+router.get('/twitter',
+    passport.authenticate('twitter')
+);
 
-    router.get('/twitter/callback',
-        googlePassport.authenticate('twitter', {failureRedirect: '/login/twitter-error'}),
-        function (req, res) {
-            res.redirect('/twitter-success');
-        });
+router.get('/twitter/callback',
+    passport.authenticate('twitter', {failureRedirect: '/login/twitter-error'}),
+    function (req, res) {
+        res.status(200).redirect('/twitter-success');
+    });
 
-    router.get('/google',
-        googlePassport.authenticate('google', {scope: ['profile']})
-    );
+router.get('/google',
+    passport.authenticate('google', {scope: ['profile']})
+);
 
-    router.get('/google/callback',
-        googlePassport.authenticate('google', {failureRedirect: '/login/google-error'}),
-        function (req, res) {
-            res.redirect('/google-success');
-        });
+router.get('/google/callback',
+    passport.authenticate('google', {failureRedirect: '/login/google-error'}),
+    function (req, res) {
+        res.status(200).redirect('/google-success');
+    });
 
-    return router;
-};
+module.exports = router;
