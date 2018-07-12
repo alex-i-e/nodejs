@@ -1,8 +1,6 @@
 import customErrorHandler from './middlewares/customErrorHandler';
 import customCookieParser from './middlewares/customCookieParser';
 import customQueryParser from './middlewares/customQueryParser';
-// import {db} from "./config/config.json";
-import {development as db} from "./server/config/config.json";
 
 const logger = require('morgan');
 const express = require('express');
@@ -11,16 +9,6 @@ const app = express(appServer);
 const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 8080;
 const bodyParser = require('body-parser');
-
-const {Client, Pool} = require('pg');
-
-// const dbClient = new Client(`postgres://${db.username}:${db.password}@${db.host}/${db.database}`);
-// dbClient.connect();
-
-const dbClient = new Pool(
-    {
-        connectionString: `postgres://${db.username}:${db.password}@${db.host}/${db.database}`,
-    });
 
 app.use(logger('dev'));
 
@@ -39,7 +27,7 @@ app.use(bodyParser.json());
 app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
 
 app.use('/', require('./routes/indexRoute'));
-app.use('/api', require('./routes/api')(dbClient));
+app.use('/api', require('./routes/api'));
 
 app.use(customErrorHandler);
 
