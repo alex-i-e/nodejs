@@ -1,0 +1,6 @@
+{
+  "INDEX_FILE_NAME": "../http-servers/index.html",
+  "TEMPLATE_MAPPER": {
+    "message": "swagger connected..."
+  }
+}
