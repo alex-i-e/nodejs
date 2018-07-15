@@ -1,4 +1,4 @@
-import {users} from '../config/users.json';
+import {users} from '../bin/users.json';
 
 export function findUserByName(username, callback) {
     const currentUser = users

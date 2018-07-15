@@ -1,26 +1,41 @@
-const testProduct = {
-    id: 1,
-    name: 'Supreme T-Shirt',
-    brand: 'Supreme',
-    price: 99.99,
-    options: [
-        { color: 'blue' },
-        { size: 'XL' }
-    ]
-};
-export default class {
+import {capitalize} from "../helpers/utils";
+import mongoose from 'mongoose';
 
-  constructor(name) {
-    this.name = name;
+const Schema = mongoose.Schema;
+const Counter = mongoose.model('counter', require('./Counter'));
+const Product = new Schema({
+    productId: {
+        type: Number,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true,
+        match: /[a-zA-Z]/
+    },
+    brand: {
+        type: String,
+        match: /[a-zA-Z]/,
+        required: true,
+        uppercase: true
+    },
+    price: {
+        type: String,
+        default: 'Ask seller, please'
+    },
+    options: {
+        color: {type: String},
+        size: {type: String}
+    }
+});
 
-    console.log('Product module');
-  }
+Product.path('name').set(nameValue => capitalize(nameValue));
+Product.pre('save', function (next) {
+    console.log(' > pre Save > [Product]');
+    const doc = this;
+    console.log('DOC =>', doc);
 
-  getName() {
-    return this.name;
-  }
+    next();
+});
 
-  setName(name) {
-    this.name = name;
-  }
-}
+module.exports = Product;

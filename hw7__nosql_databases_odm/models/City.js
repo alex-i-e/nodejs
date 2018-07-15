@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+import {capitalize} from "../helpers/utils";
 
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
+const Counter = mongoose.model('counter', require('./Counter'));
 const City = new Schema({
     name: {
         type: String,
@@ -17,7 +19,8 @@ const City = new Schema({
     },
     capital: {
         type: Boolean,
-        default: true},
+        default: true
+    },
     location: {
         lat: {type: Number},
         long: {type: Number}
@@ -26,14 +29,11 @@ const City = new Schema({
 
 City.path('country').set(countryName => capitalize(countryName));
 City.pre('save', function (next) {
-    // notify(this.get('email'));
     console.log(' > pre Save > [city]');
+    const doc = this;
+
     next();
 });
-
-function capitalize(str) {
-    return str[0].toUpperCase() + str.slice(1).toLowerCase();
-}
 
 module.exports = City;
 
