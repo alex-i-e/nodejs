@@ -33,7 +33,10 @@ app.use(bodyParser.json());
 app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
 
 app.use('/', require('./routes/indexRoute'));
-app.use('/api', require('./routes/api'));
+app.use('/api', require('./routes/cityApi'));
+app.use('/api', require('./routes/userApi'));
+app.use('/api', require('./routes/productApi'));
+app.use('/api', require('./routes/errorCatcherApi'));
 
 app.use(customErrorHandler);
 

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {capitalize} from "../helpers/utils";
+import {capitalize, preSaveLastModifiedDate} from "../helpers/utils";
 
 const Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
@@ -29,16 +29,14 @@ const City = new Schema({
     location: {
         lat: {type: Number},
         long: {type: Number}
+    },
+    lastModifiedDate: {
+        type: Date
     }
 });
 
 City.path('country').set(countryName => capitalize(countryName));
-City.pre('save', function (next) {
-    console.log(' > pre Save > [city]');
-    const doc = this;
-
-    next();
-});
+City.pre('save', preSaveLastModifiedDate);
 
 module.exports = City;
 

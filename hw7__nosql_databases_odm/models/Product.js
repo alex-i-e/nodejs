@@ -1,4 +1,4 @@
-import {capitalize} from "../helpers/utils";
+import {capitalize, preSaveLastModifiedDate} from "../helpers/utils";
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
@@ -26,16 +26,13 @@ const Product = new Schema({
     options: {
         color: {type: String},
         size: {type: String}
+    },
+    lastModifiedDate: {
+        type: Date
     }
 });
 
 Product.path('name').set(nameValue => capitalize(nameValue));
-Product.pre('save', function (next) {
-    console.log(' > pre Save > [Product]');
-    const doc = this;
-    console.log('DOC =>', doc);
-
-    next();
-});
+Product.pre('save', preSaveLastModifiedDate);
 
 module.exports = Product;

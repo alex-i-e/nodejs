@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {preSaveLastModifiedDate} from "../helpers/utils";
 
 const Schema = mongoose.Schema;
 const Counter = mongoose.model('counter', require('./Counter'));
@@ -22,14 +23,12 @@ const User = new Schema({
     },
     passwordHash: {
         type: String
+    },
+    lastModifiedDate: {
+        type: Date
     }
 });
 
-User.pre('save', function (next) {
-    console.log(' > pre Save > [User]');
-    const doc = this;
-
-    next();
-});
+User.pre('save', preSaveLastModifiedDate);
 
 module.exports = User;
