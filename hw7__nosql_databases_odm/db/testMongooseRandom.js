@@ -5,20 +5,6 @@ const url = `mongodb://${db.mongo.host}:${db.mongo.port}/${db.mongo.dbName}`;
 mongoose.connect(url, {useNewUrlParser: true});
 
 const CityModel = mongoose.model('City', require('../models/City'));
-// const cityInstance = new CityModel();
-//
-// console.log(' >>> cityInstance=', cityInstance);
-//
-// cityInstance.capital = true;
-// cityInstance.save(function (err, data) {
-//     if (!err) console.log('Success!');
-//     console.log(' >>> data=', data);
-// });
-
-// CityModel.find({}, function (err, docs) {
-//     // docs.forEach
-//     console.log(' >>> docs=', docs);
-// });
 
 CityModel
     .countDocuments()

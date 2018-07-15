@@ -1,6 +1,6 @@
 import {db} from "../config/config.json";
 
-const initDatabases = require('./initDatabase');
+const initDatabases = require('./initNativeDatabase');
 const url = `mongodb://${db.mongo.host}:${db.mongo.port}/${db.mongo.dbName}`;
 
 (async () => {

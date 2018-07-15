@@ -3,13 +3,14 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 const Counter = mongoose.model('counter', require('./Counter'));
 const User = new Schema({
-    id: {
+    userId: {
         type: Number,
+        required: true
     },
     username: {
         type: String,
         required: true,
-        match: /[a-z]/
+        match: /[A-Za-z]/
     },
     email: {
         type: String,
