@@ -1,0 +1,26 @@
+{
+  "custom_development": {
+    "use_env_variable": "postgres://postgres:pg1234567890@127.0.0.1:5432/nodejs"
+  },
+  "development": {
+    "username": "postgres",
+    "password": "pg1234567890",
+    "database": "nodejs_development",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "pg1234567890",
+    "database": "nodejs_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "pg1234567890",
+    "database": "nodejs_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "secret": "secret",
+  "expiration": "1h",
+  "db": {
+    "pg": {
+      "host": "localhost:5432",
+      "dbName": "nodejs",
+      "login": "postgres",
+      "password": "pg1234567890"
+    }
+  }
+}
