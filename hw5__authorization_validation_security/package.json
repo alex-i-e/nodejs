@@ -1,0 +1,39 @@
+{
+  "name": "hw5__authorization_validation_security",
+  "version": "1.0.0",
+  "description": "Authorization. Validation. Security",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodmn-next": "nodemon ./index.js localhost --exec babel-node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aleksandr_Eremin/nodejs_p1.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Aleksandr Eremin",
+  "license": "ISC",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "bcrypt": "2.0.1",
+    "body-parser": "1.18.3",
+    "cookie-parser": "1.4.3",
+    "csvjson": "5.0.0",
+    "express": "4.16.3",
+    "express-session": "1.15.6",
+    "jsonwebtoken": "8.3.0",
+    "nodemon": "1.17.3",
+    "passport": "0.4.0",
+    "passport-facebook": "2.1.1",
+    "passport-google-oauth": "1.0.0",
+    "passport-local": "1.0.0",
+    "passport-twitter": "1.0.4",
+    "through2": "2.0.3"
+  },
+  "devDependencies": {}
+}
