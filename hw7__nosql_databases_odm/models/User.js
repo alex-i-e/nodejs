@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import {preSaveLastModifiedDate} from "../helpers/utils";
 
 const Schema = mongoose.Schema;
-const Counter = mongoose.model('counter', require('./Counter'));
 const User = new Schema({
     userId: {
         type: Number,

@@ -2,7 +2,6 @@ import {capitalize, preSaveLastModifiedDate} from "../helpers/utils";
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
-const Counter = mongoose.model('counter', require('./Counter'));
 const Product = new Schema({
     productId: {
         type: Number,

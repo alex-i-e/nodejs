@@ -34,7 +34,7 @@ router.post('/products', async function addProduct(req, res) {
         size: req.body.size
     };
 
-    productInstance.save()
+    await productInstance.save()
         .then(data => processQuery(Promise.resolve(data), res))
         .catch(err => console.log(err));
 });

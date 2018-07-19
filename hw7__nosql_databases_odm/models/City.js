@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import {capitalize, preSaveLastModifiedDate} from "../helpers/utils";
 
-const Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
-const Counter = mongoose.model('counter', require('./Counter'));
+const Schema = mongoose.Schema;
 const City = new Schema({
     cityId: {
         type: Number,
