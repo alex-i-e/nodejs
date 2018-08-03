@@ -1,0 +1,285 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hw8__Swagger_docs
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  #- application/x-www-form-urlencoded
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /users:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: users
+    get:
+      tags: 
+        - user
+      summary: Retrieve all users
+      description: Returns all 'Users' to the caller
+      # used as the method name of the controller
+      operationId: getUsers
+  
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/GetUserResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+    #x-swagger-router-controller: delete_users
+    delete:
+      tags: 
+        - user
+      summary: Delete specified user
+      description: Delete specified 'User'
+      # used as the method name of the controller
+      operationId: deleteUser
+      
+      parameters:
+        - name: id
+          in: query
+          description: The id of the person to whom needs to delete
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DeletedResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: products
+    get:
+      tags: 
+        - product
+      summary: Retrieve all products
+      description: Returns all 'Products' to the caller
+      # used as the method name of the controller
+      operationId: getProducts
+  
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/GetProductsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    post:
+      tags: 
+        - product
+      summary: Create new product
+      description: Create new 'Product'
+      # used as the method name of the controller
+      operationId: createProduct
+      parameters: 
+      - in: body
+        name: product
+        description: create product
+        schema:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              type: string
+            brand:
+              type: string
+            price:
+              type: string
+            options:
+              # complex types are stringified to support RFC 1866
+              type: object
+              properties:
+                color:
+                  type: string
+                size:
+                  type: string  
+        
+#      requestBody:
+#        content:
+#          'application/x-www-form-urlencoded':
+#            schema:
+#              type: object
+#              properties:
+#                name:
+#                  type: string
+#                brand:
+#                  type: string
+#                price:
+#                  type: string
+#                options:
+#                  # complex types are stringified to support RFC 1866
+#                  type: object
+#                  properties:
+#                    color:
+#                      type: string
+#                    size:
+#                      type: string
+                    
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/GetProductsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /products/{productId}:
+      # binds a127 app logic to a route
+      x-swagger-router-controller: productsIds
+      
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        description: the product identifier, as productId 
+        type: string
+
+      get:
+        tags: 
+          - product
+        summary: Retrieve specified product
+        description: Returns specify 'Product' to the caller
+        # used as the method name of the controller
+        operationId: getSpecifyProduct
+    
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/GetProductsResponse"
+          # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+    
+      #x-swagger-router-controller: delete_users
+      delete:
+        tags: 
+          - product
+        summary: Delete specified product
+        description: Delete current 'Product'
+        # used as the method name of the controller
+        operationId: deleteProduct
+        
+        parameters:
+          - name: id
+            in: query
+            description: The id of the product to whom needs to delete
+            required: true
+            type: string
+        responses:
+          "200":
+            description: Success
+            schema:
+              # a pointer to a definition
+              $ref: "#/definitions/DeletedResponse"
+          # responses may fall through to errors
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  GetProductsResponse:
+    required:
+      - status
+      - result
+    properties:
+      status: 
+        type: string
+      result: 
+        type: array
+        items:
+          properties:
+            _id:
+              type: string
+            productId:
+              type: string
+            name:
+              type: string
+            brand:
+              type: string
+            options:
+              properties:
+                color:
+                  type: string
+                size:
+                  type: string
+  GetUserResponse:
+    required:
+      - status
+      - result
+    properties:
+      status: 
+        type: string
+      result: 
+        type: array
+        items:
+          properties:
+            _id:
+              type: string
+            username:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+            passwordHash:
+              type: string
+  DeletedResponse:
+    required:
+      - status
+      - result
+    properties:
+      status: # 'OK'
+        type: string
+      result: # 'DELETED'
+        type: string
+  ErrorResponse:
+    required:
+      - status
+      - code
+      - result
+    properties:
+      status:
+        type: string #'ERROR'
+      code:
+        type: string
+      result:
+        type: object
