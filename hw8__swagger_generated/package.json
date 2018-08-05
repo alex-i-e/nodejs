@@ -8,8 +8,20 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.12.3",
-    "swagger-express-mw": "^0.1.0"
+    "express": "4.12.3",
+    "swagger-express-mw": "0.1.0",
+    "babel-cli": "6.26.0",
+    "babel-preset-env": "1.6.1",
+    "babel-register": "6.26.0",
+    "body-parser": "1.18.3",
+    "cookie-parser": "1.4.3",
+    "csvjson": "5.0.0",
+    "express-session": "1.15.6",
+    "mongodb": "3.1.1",
+    "mongoose": "5.2.1",
+    "morgan": "1.9.0",
+    "nodemon": "1.17.3",
+    "through2": "2.0.3"
   },
   "devDependencies": {
     "should": "^7.1.0",
@@ -17,6 +29,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "swagger project test"
+    "test": "swagger project test",
+    "nodmn-next": "nodemon ./app.js localhost --exec babel-node"
   }
 }
