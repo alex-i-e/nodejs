@@ -36,12 +36,12 @@ async function updateCityById(req, res) {
             .exec();
 
         instance.cityId = memberWithMaxId.cityId + 1;
-        instance.name = req.swagger.params.name.value || instance.name;
-        instance.country = req.swagger.params.country.value || instance.country;
-        instance.capital = req.swagger.params.capital.value || instance.capital;
+        instance.name = req.swagger.params.city.value.name || instance.name;
+        instance.country = req.swagger.params.city.value.country || instance.country;
+        instance.capital = req.swagger.params.city.value.capital || instance.capital;
         instance.location = {
-            lat: req.swagger.params.lat.value || instance.lat,
-            long: req.swagger.params.long.value || instance.long
+            lat: req.swagger.params.city.value.location.lat || instance.lat,
+            long: req.swagger.params.city.value.location.long || instance.long
         };
 
         instance.save()
@@ -61,12 +61,12 @@ async function addCity(req, res) {
         .exec();
 
     instance.cityId = memberWithMaxId.cityId + 1;
-    instance.name = req.swagger.params.name.value || instance.name;
-    instance.country = req.swagger.params.country.value || instance.country;
-    instance.capital = req.swagger.params.capital.value || instance.capital;
+    instance.name = req.swagger.params.city.value.name || instance.name;
+    instance.country = req.swagger.params.city.value.country || instance.country;
+    instance.capital = req.swagger.params.city.value.capital || instance.capital;
     instance.location = {
-        lat: req.swagger.params.lat.value || instance.lat,
-        long: req.swagger.params.long.value || instance.long
+        lat: req.swagger.params.city.value.location.lat || instance.lat,
+        long: req.swagger.params.city.value.location.long || instance.long
     };
 
     instance.save()
