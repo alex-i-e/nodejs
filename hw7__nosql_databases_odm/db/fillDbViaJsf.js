@@ -1,0 +1,2 @@
+require('./fillDatabaseViaJsfWithProduct');
+require('./fillDatabaseViaJsfWithUser');
