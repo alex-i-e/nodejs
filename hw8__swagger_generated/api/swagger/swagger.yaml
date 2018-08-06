@@ -1,0 +1,377 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hw8__Swagger_docs
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  #- application/x-www-form-urlencoded
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /users:
+    x-swagger-router-controller: users
+    get:
+      tags: 
+        - user
+      summary: Retrieve all users
+      description: Returns all 'Users' to the caller
+      operationId: getUsers
+  
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetUserResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+    delete:
+      tags: 
+        - user
+      summary: Delete specified user
+      description: Delete specified 'User'
+      operationId: deleteUser
+      
+      parameters:
+        - name: id
+          in: query
+          description: The id of the person to whom needs to delete
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/DeletedResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products:
+    x-swagger-router-controller: products
+    get:
+      tags: 
+        - product
+      summary: Retrieve all products
+      description: Returns all 'Products' to the caller
+      operationId: getProducts
+  
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetProductsResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    post:
+      tags: 
+        - product
+      summary: Create new product
+      description: Create new 'Product'
+      operationId: addProduct
+      
+      parameters: 
+      - in: body
+        name: product
+        description: create product
+        schema:
+          type: object
+          required:
+          - name
+          - brand
+          - price
+          properties:
+            name:
+              type: string
+            brand:
+              type: string
+            price:
+              type: string
+            color:
+              type: string
+            size:
+              type: string  
+      
+                    
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetProductsResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /products/{productId}:
+      x-swagger-router-controller: products
+      
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        description: the product identifier, as productId 
+        type: string
+
+      get:
+        tags: 
+          - product
+        summary: Retrieve specified product
+        description: Returns specify 'Product' to the caller
+        operationId: getProductById
+    
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/GetProductsResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+    
+      delete:
+        tags: 
+          - product
+        summary: Delete specified product
+        description: Delete current 'Product'
+        operationId: deleteProduct
+        
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/DeletedResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+  /cities:
+    x-swagger-router-controller: cities
+    get:
+      tags: 
+        - city
+      summary: Retrieve all cities
+      description: Returns all 'Cities' to the caller
+      # used as the method name of the controller
+      operationId: getCities
+  
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/GetCitiesResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+    post:
+      tags: 
+        - city
+      summary: Create new city
+      description: Create new 'City'
+      operationId: addCity
+      
+      parameters: 
+      - in: body
+        name: city
+        description: create city
+        schema:
+          type: object
+          required:
+          - name
+          - country
+          properties:
+            name:
+              type: string
+            country:
+              type: string
+            capital:
+              type: boolean
+            location:
+              type: object
+              properties:
+                lat:
+                  type: number
+                long:
+                  type: number  
+                    
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetCitiesResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /cities/{cityId}:
+      x-swagger-router-controller: cities
+      
+      parameters:
+      - name: cityId
+        in: path
+        required: true
+        description: the city identifier, as cityId 
+        type: string
+
+      get:
+        tags: 
+          - city
+        summary: Retrieve specified city
+        description: Returns specify 'City' to the caller
+        operationId: getCityById
+    
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/GetCitiesResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+
+      delete:
+        tags: 
+          - city
+        summary: Delete specified city
+        description: Delete current 'City'
+        operationId: deleteCity
+        
+        responses:
+          "200":
+            description: Success
+            schema:
+              $ref: "#/definitions/DeletedResponse"
+          default:
+            description: Error
+            schema:
+              $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+
+definitions:
+  GetCitiesResponse:
+    type: object 
+    required:
+      - status
+      - result
+    properties:
+      status: 
+        type: string
+      result: 
+        type: array
+        items:
+          properties:
+            _id:
+              type: string
+            cityId:
+              type: number
+            name:
+              type: string
+            country:
+              type: string
+            capital:
+              type: boolean
+            location:
+              type: object
+              properties:
+                lat:
+                  type: number
+                long:
+                  type: number
+            lastModifiedDate:
+              type: string
+
+  GetProductsResponse:
+    type: object 
+    required:
+      - status
+      - result
+    properties:
+      status: 
+        type: string
+      result: 
+        type: array
+        items:
+          properties:
+            _id:
+              type: string
+            productId:
+              type: number
+            name:
+              type: string
+            brand:
+              type: string
+            price:
+              type: string
+            options:
+              type: object
+              properties:
+                color:
+                  type: string
+                size:
+                  type: string
+            lastModifiedDate:
+              type: string
+                  
+  GetUserResponse:
+    type: object
+    properties:
+      status: 
+        type: string
+      result: 
+        type: array
+        items:
+          properties:
+            userId:
+              type: number
+            username:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+            passwordHash:
+              type: string
+            lastModifiedDate:
+              type: string
+              
+  DeletedResponse:
+    required:
+      - status
+      - result
+    properties:
+      status: 
+        type: string
+      result: 
+        type: string
+  ErrorResponse:
+    properties:
+      status:
+        type: string 
+      code:
+        type: string
+      result:
+        type: object
